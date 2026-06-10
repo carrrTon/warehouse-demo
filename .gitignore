@@ -1,0 +1,4 @@
+# 本地输入源和编辑器状态
+sample-source/
+.DS_Store
+.claude/

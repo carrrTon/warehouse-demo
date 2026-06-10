@@ -1,0 +1,2 @@
+M	current/job_demo_order_summary/待发布版本/tasks/demo_order_summary.sql
+A	current/job_demo_inventory_monitor/生产版本/tasks/demo_inventory_check.py

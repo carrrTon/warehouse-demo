@@ -1,0 +1,34 @@
+diff --git a/current/job_demo_order_summary/待发布版本/tasks/demo_order_summary.sql b/current/job_demo_order_summary/待发布版本/tasks/demo_order_summary.sql
+index 1111111..2222222 100644
+--- a/current/job_demo_order_summary/待发布版本/tasks/demo_order_summary.sql
++++ b/current/job_demo_order_summary/待发布版本/tasks/demo_order_summary.sql
+@@ -1,9 +1,10 @@
+ -- Demo: add channel dimension before publishing.
+ insert overwrite table ads_demo_order_summary_df partition (dt='${bizdate}')
+ select
+   shop_id,
++  channel_code,
+   count(distinct order_id) as order_count,
+   sum(pay_amount) as pay_amount,
+   current_timestamp as updated_at
+ from dwd_demo_order_detail_df
+ where dt = '${bizdate}'
+-group by shop_id;
++group by shop_id, channel_code;
+
+diff --git a/current/job_demo_inventory_monitor/生产版本/tasks/demo_inventory_check.py b/current/job_demo_inventory_monitor/生产版本/tasks/demo_inventory_check.py
+new file mode 100644
+index 0000000..3333333
+--- /dev/null
++++ b/current/job_demo_inventory_monitor/生产版本/tasks/demo_inventory_check.py
+@@ -0,0 +1,16 @@
++from datetime import date
++
++
++def build_inventory_alert_sql(bizdate: date) -> str:
++    return f"""
++select sku_id, warehouse_id, available_qty, safety_qty
++from dwd_demo_inventory_snapshot_df
++where dt = '{bizdate:%Y-%m-%d}'
++  and available_qty < safety_qty
++""".strip()
